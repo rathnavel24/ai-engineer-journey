@@ -1,0 +1,25 @@
+[project]
+name = "ai-engineer-journey"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+authors = [
+    { name = "rathnavel24", email = "121199806+rathnavel24@users.noreply.github.com" }
+]
+requires-python = ">=3.12"
+dependencies = [
+    "python-dotenv>=1.2.3",
+]
+
+[project.scripts]
+ai-engineer-journey = "ai_engineer_journey:main"
+
+[build-system]
+requires = ["uv_build>=0.12.15,<0.13.0"]
+build-backend = "uv_build"
+
+[dependency-groups]
+dev = [
+    "pytest>=9.1.1",
+    "ruff>=0.16.8",
+]
