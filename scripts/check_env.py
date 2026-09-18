@@ -3,7 +3,7 @@ import sys
 
 from dotenv import load_dotenv
 
-REQUIRED_KEYS = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "OLLAMA_HOST"]
+REQUIRED_KEYS = ["ANTHROPIC_API_KEY", "OPENAI_API_KEY", "GEMINI_API_KEY", "OLLAMA_HOST"]
 
 
 def main() -> int:

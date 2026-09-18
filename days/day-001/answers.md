@@ -1,9 +1,5 @@
 # Day 001
 
-## Goal
-
-## Notes
-
 ## Answers
 1.Explain in your own words: what does uv.lock protect you from that pyproject.toml alone doesn't?
 

@@ -9,15 +9,13 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "dotenv>=0.9.9",
+    "google-genai>=2.24.0",
     "python-dotenv>=1.2.3",
+    "requests>=2.34.2",
 ]
 
-[project.scripts]
-ai-engineer-journey = "ai_engineer_journey:main"
-
-[build-system]
-requires = ["uv_build>=0.12.15,<0.13.0"]
-build-backend = "uv_build"
+[tool.uv]
+package = false
 
 [dependency-groups]
 dev = [
