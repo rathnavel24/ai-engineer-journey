@@ -89,3 +89,14 @@ The most likely reason is hardware/local execution, not the network. Ollama runs
 However, this benchmark cannot prove that the model itself is inherently faster because you're measuring end-to-end latency. To make the comparison more reliable, run each prompt 3 times and compare the median latency.
 
 Answer: Ollama was fastest (1.908s), mainly because it runs locally on your hardware and avoids network/API overhead.
+
+
+## Day 1 recall check (no notes)
+
+uv.lock vs pyproject.toml: pyproject.toml states what you want (loose version ranges); uv.lock pins the exact resolved versions of every dependency, direct and transitive, so `uv sync` gives everyone the same environment instead of whatever the resolver picks on a given day.
+
+.env committed then deleted in the next commit: the secrets aren't safe. Git keeps every version of a file in history, so the .env content is still retrievable from the earlier commit even after a later commit removes the file. Fix is rotate the leaked keys first, then scrub the file from history (git filter-repo / BFG) and force-push - deleting it going forward isn't enough.
+
+## Reflection
+
+Cost and latency aren't properties of "the model" in the abstract - they're properties of a specific request against a specific provider, and they only mean something once you've run it more than once.
