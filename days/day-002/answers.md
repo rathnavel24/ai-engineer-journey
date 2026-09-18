@@ -27,19 +27,20 @@ Instead:
 cost = token usage × provider/model pricing rules
 
 
-2.(ai-engineer-journey) rathnavel@rathnavels-MacBook-Pro ai-engineer-journey % uv run days/day-002/compare_llms.py
+2.(ai-engineer-journey) rathnavel@rathnavels-MacBook-Pro ai-engineer-journey % uv run days/day-002/compare_llms.py                             
 Direct use of automatic function calling (AFC) in Models.generate_content is not recommended. Instead, we recommend to use AFC in Chat.send_message. Similarly, direct use of AFC in Models.generate_content_stream is not recommended. Instead, we recommend to use AFC in Chat.send_message_stream.
 Prompt: "In one sentence, explain what a vector database is."
+(each provider called 3x; latency/tokens/cost below are medians)
 
 Provider    Model                                 Latency (s)   In tok   Out tok  Cost ($)    
 ----------------------------------------------------------------------------------------------
-Gemini      gemini-3.6-flash                      4.623         12       40       0.00015900  
-OpenRouter  deepseek/deepseek-v4-flash-0731:free  2.882         94       59       0.00000000  
-Ollama      llama3.2:3b                           1.908         36       49       0.00000000  
+Gemini      gemini-3.6-flash                      4.394         12       37       0.00014775  
+OpenRouter  deepseek/deepseek-v4-flash-0731:free  2.385         94       50       0.00000000  
+Ollama      llama3.2:3b                           1.688         36       43       0.00000000  
 
-Gemini output: A vector database is a specialized database that stores and indexes data as high-dimensional numerical vectors (embeddings), enabling AI systems to quickly search and retrieve information based on semantic similarity rather than exact keyword matches.
-OpenRouter output: A vector database is a specialized database that stores and indexes data as high-dimensional numerical vectors (embeddings) and enables fast similarity searches based on vector distance, powering AI applications like semantic search and recommendation engines.
-Ollama output: A vector database is a type of database that stores and manages dense vector data, such as text, images, or other high-dimensional data, using efficient data structures and algorithms to enable fast and scalable similarity searches, clustering, and recommendation systems.
+Gemini output: A vector database is a specialized storage system that indexes and retrieves data as high-dimensional numerical representations, enabling AI applications to perform fast, similarity-based searches rather than exact keyword matches.
+OpenRouter output: A vector database is a specialized database designed to store, index, and query high-dimensional vector embeddings using similarity search, enabling fast retrieval of related items based on semantic or mathematical proximity.
+Ollama output: A vector database is a type of database that stores and manages large collections of vectors, which are mathematical representations of objects or data points, enabling efficient similarity searches, nearest neighbor queries, and other distance-based computations.
 
 
 3. What happens if max_tokens=4000 for a one-line answer?

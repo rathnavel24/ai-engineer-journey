@@ -8,8 +8,10 @@ Ollama runs on local compute, so its cost is always $0.
 """
 
 import os
+import statistics
 import sys
 import time
+from collections.abc import Callable
 from dataclasses import dataclass
 
 import requests
@@ -19,6 +21,7 @@ from google import genai
 load_dotenv()
 
 PROMPT = "In one sentence, explain what a vector database is."
+RUNS = 3
 
 # USD per 1M tokens: (input, output). Gemini rate is the through-2026-12-31 promo rate.
 PRICING = {
@@ -130,8 +133,29 @@ def call_ollama(prompt: str) -> Result:
     return result
 
 
+def run_with_median(call_fn: Callable[[str], Result], prompt: str, runs: int = RUNS) -> Result:
+    """Call call_fn `runs` times and collapse the attempts into one Result using
+    the median latency/tokens/cost across the successful runs."""
+    attempts = [call_fn(prompt) for _ in range(runs)]
+    successes = [r for r in attempts if r.error is None]
+
+    if not successes:
+        return attempts[0]  # every run failed - surface the first error as-is
+
+    return Result(
+        provider=successes[0].provider,
+        model=successes[0].model,
+        latency_s=statistics.median(r.latency_s for r in successes),
+        input_tokens=round(statistics.median(r.input_tokens for r in successes)),
+        output_tokens=round(statistics.median(r.output_tokens for r in successes)),
+        cost_usd=statistics.median(r.cost_usd for r in successes),
+        output_text=successes[-1].output_text,
+    )
+
+
 def print_report(results: list[Result]) -> None:
-    print(f'Prompt: "{PROMPT}"\n')
+    print(f'Prompt: "{PROMPT}"')
+    print(f"(each provider called {RUNS}x; latency/tokens/cost below are medians)\n")
 
     header = f"{'Provider':<12}{'Model':<38}{'Latency (s)':<14}{'In tok':<9}{'Out tok':<9}{'Cost ($)':<12}"
     print(header)
@@ -154,7 +178,11 @@ def print_report(results: list[Result]) -> None:
 
 
 def main() -> int:
-    results = [call_gemini(PROMPT), call_openrouter(PROMPT), call_ollama(PROMPT)]
+    results = [
+        run_with_median(call_gemini, PROMPT),
+        run_with_median(call_openrouter, PROMPT),
+        run_with_median(call_ollama, PROMPT),
+    ]
     print_report(results)
     return 0 if all(r.error is None for r in results) else 1
 
