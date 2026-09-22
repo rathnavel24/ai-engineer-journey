@@ -17,6 +17,7 @@ dependencies = [
     "python-dotenv>=1.2.3",
     "requests>=2.34.2",
     "sse-starlette>=3.4.11",
+    "tiktoken>=0.14.0",
     "uvicorn[standard]>=0.53.0",
 ]
 
