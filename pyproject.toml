@@ -9,6 +9,7 @@ authors = [
 requires-python = ">=3.12"
 dependencies = [
     "anthropic>=1.6.0",
+    "asyncpg>=0.31.0",
     "dotenv>=0.9.9",
     "fastapi>=0.141.1",
     "google-genai>=2.24.0",
@@ -26,6 +27,7 @@ package = false
 
 [dependency-groups]
 dev = [
+    "ipykernel>=7.3.0",
     "pytest>=9.1.1",
     "pytest-asyncio>=1.4.0",
     "ruff>=0.16.8",
