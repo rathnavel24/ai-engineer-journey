@@ -52,6 +52,8 @@ Assumed output: 40 tokens/alert (given)
 - **gpt-4o**: (26.10 × $2.50/1M) + (40 × $10.00/1M), × 1000 alerts = **$0.4653** per 1,000 alerts
 - **claude-sonnet-5 (estimate)**: (26.10 × $2.00/1M) + (40 × $10.00/1M), × 1000 alerts = **$0.4522** per 1,000 alerts
 
+**Caveat:** this multiplies the *average* input-token count across the 20-alert sample by 1000, not the sum of 1000 actual per-request token counts — it's a projection, not a bill. Real billing sums each individual request's actual input tokens (plus its actual output tokens), and averaging only works cleanly here because this sample's alerts are all close in length (21–29 tokens). If alert lengths varied a lot more — a one-line "device offline" alert next to a 500-token stack trace dump — the mean would smear that variance away and the projection would drift from what you'd actually get billed.
+
 Run it yourself: `uv run python days/day-005/token_cost.py`
 
 ---
@@ -61,6 +63,13 @@ Run it yourself: `uv run python days/day-005/token_cost.py`
 **1. Explain in your own words: why can the same alert string produce a different token count depending on which model's encoding you use?**
 
 A tokenizer's vocabulary isn't universal — it's the output of running byte-pair encoding over that provider's own training corpus, merging whichever byte/character pairs showed up most often *in that corpus*, until it hits its target vocabulary size (GPT-4o's `o200k_base` has a different merge list than Claude's tokenizer, which has a different one again). Two tokenizers looking at the exact same string can legally chunk it differently — one might have `"temperature"` as a single merged token because it was common enough in its training data to earn its own slot, while another splits it into `"temp"` + `"erature"` or smaller pieces because that word pair never got merged in its vocabulary. Same characters in, different chunk boundaries out, so different token counts — the string didn't change, the ruler measuring it did.
+
+**2. Coding task: extend token_cost.py to print the single most expensive alert (highest token count) and the cheapest.**
+
+Done in `token_cost.py` — for each model it finds the index with `max()`/`min()` over that model's per-alert token counts and prints both. Output (same for both models here, since `o200k_base` and `cl100k_base` happen to agree on this alert set):
+
+- Most expensive: index 1, 29 tokens — `"Machine M-02 energy draw 4.8kW exceeds threshold 4.0kW, tenant=acme, severity=medium"`
+- Cheapest: index 18, 21 tokens — `"Machine M-15 temperature 99C exceeds threshold 85C, tenant=wayne, severity=critical"`
 
 **3. What breaks if: a user-submitted alert message is 50,000 characters long and you feed it straight into your prompt with no length check against the model's context window?**
 
